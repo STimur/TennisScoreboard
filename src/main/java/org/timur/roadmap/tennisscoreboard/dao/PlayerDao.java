@@ -1,8 +1,9 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.timur.roadmap.tennisscoreboard.entity.Player;
 
 import java.util.List;
 

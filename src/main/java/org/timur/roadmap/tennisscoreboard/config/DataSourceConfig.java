@@ -1,4 +1,4 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 

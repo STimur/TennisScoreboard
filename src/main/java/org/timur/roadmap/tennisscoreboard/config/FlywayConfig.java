@@ -1,4 +1,4 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.config;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;

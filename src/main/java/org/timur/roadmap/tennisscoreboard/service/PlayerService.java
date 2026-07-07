@@ -1,6 +1,8 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.service;
 
 import org.springframework.stereotype.Service;
+import org.timur.roadmap.tennisscoreboard.dao.PlayerDao;
+import org.timur.roadmap.tennisscoreboard.entity.Player;
 
 import java.util.List;
 

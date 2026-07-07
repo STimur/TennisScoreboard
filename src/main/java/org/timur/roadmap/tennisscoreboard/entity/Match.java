@@ -1,4 +1,4 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,6 +38,22 @@ public class Match {
             foreignKey = @ForeignKey(name = "fk_matches_winner")
     )
     private Player winner;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
 
     @Override
     public String toString() {

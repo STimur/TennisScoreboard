@@ -1,6 +1,7 @@
 package org.timur.roadmap.tennisscoreboard;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.timur.roadmap.tennisscoreboard.config.WebConfig;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 

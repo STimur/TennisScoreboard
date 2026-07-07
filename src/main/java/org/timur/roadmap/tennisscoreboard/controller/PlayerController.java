@@ -1,11 +1,14 @@
-package org.timur.roadmap.tennisscoreboard;
+package org.timur.roadmap.tennisscoreboard.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.timur.roadmap.tennisscoreboard.entity.Player;
+import org.timur.roadmap.tennisscoreboard.service.PlayerService;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/players")
 public class PlayerController {
 
@@ -16,9 +19,7 @@ public class PlayerController {
     }
 
     @GetMapping
-    @ResponseBody
-    public String players() {
-        return playerService.getAllPlayers().toString();
+    public List<Player> players() {
+        return playerService.getAllPlayers();
     }
-
 }
