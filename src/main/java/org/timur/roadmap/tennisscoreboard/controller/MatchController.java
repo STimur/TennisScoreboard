@@ -49,4 +49,10 @@ public class MatchController {
     ) {
         return matchService.addPoint(uuid, request);
     }
+
+    @GetMapping("/{uuid}")
+    public ScoreResponse getScore(
+            @PathVariable("uuid") UUID uuid) {
+        return matchService.getScore(uuid);
+    }
 }

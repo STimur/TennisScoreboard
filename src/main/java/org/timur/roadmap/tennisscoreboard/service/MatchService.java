@@ -78,4 +78,11 @@ public class MatchService {
 
         return ongoingMatchMapper.toDto(match);
     }
+
+    public ScoreResponse getScore(UUID uuid) {
+        OngoingMatch match = ongoingMatchService.find(uuid)
+                .orElseThrow(MatchNotFoundException::new);
+
+        return ongoingMatchMapper.toDto(match);
+    }
 }
