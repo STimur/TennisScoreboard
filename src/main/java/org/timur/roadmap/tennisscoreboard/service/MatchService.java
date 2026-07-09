@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchRequest;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchResponse;
+import org.timur.roadmap.tennisscoreboard.dto.FinishedMatchesResponse;
 import org.timur.roadmap.tennisscoreboard.dto.MatchDto;
 import org.timur.roadmap.tennisscoreboard.dao.MatchDao;
+import org.timur.roadmap.tennisscoreboard.dto.PageResult;
 import org.timur.roadmap.tennisscoreboard.dto.PointRequest;
 import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
+import org.timur.roadmap.tennisscoreboard.entity.Match;
 import org.timur.roadmap.tennisscoreboard.entity.Player;
 import org.timur.roadmap.tennisscoreboard.mapper.MatchMapper;
 import org.timur.roadmap.tennisscoreboard.exception.MatchNotFoundException;
@@ -84,5 +87,18 @@ public class MatchService {
                 .orElseThrow(MatchNotFoundException::new);
 
         return ongoingMatchMapper.toDto(match);
+    }
+
+    public FinishedMatchesResponse getFinishedMatches(int page, String playerName) {
+        PageResult<Match> matches = matchDao.findFinishedMatches(page, playerName);
+
+        return new FinishedMatchesResponse(
+                matches.items()
+                        .stream()
+                        .map(matchMapper::toFinishedDto)
+                        .toList(),
+                page,
+                matches.totalPages()
+        );
     }
 }

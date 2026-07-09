@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchRequest;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchResponse;
-import org.timur.roadmap.tennisscoreboard.dto.MatchDto;
+import org.timur.roadmap.tennisscoreboard.dto.FinishedMatchesResponse;
 import org.timur.roadmap.tennisscoreboard.dto.PointRequest;
 import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
 import org.timur.roadmap.tennisscoreboard.service.MatchService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,11 +27,6 @@ public class MatchController {
 
     public MatchController(MatchService matchService) {
         this.matchService = matchService;
-    }
-
-    @GetMapping
-    public List<MatchDto> players() {
-        return matchService.getAllMatches();
     }
 
     @PostMapping
@@ -54,5 +49,13 @@ public class MatchController {
     public ScoreResponse getScore(
             @PathVariable("uuid") UUID uuid) {
         return matchService.getScore(uuid);
+    }
+
+    @GetMapping
+    public FinishedMatchesResponse getMatches(
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "player_name", required = false) String playerName
+    ) {
+        return matchService.getFinishedMatches(page, playerName);
     }
 }
