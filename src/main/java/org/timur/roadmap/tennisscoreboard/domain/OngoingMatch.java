@@ -16,7 +16,23 @@ public class OngoingMatch {
         this.secondPlayer = secondPlayer;
     }
 
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public Player getSecondPlayer() {
+        return secondPlayer;
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public boolean isFinished() {
+        return false;
     }
 }

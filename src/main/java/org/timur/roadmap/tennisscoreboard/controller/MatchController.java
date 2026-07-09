@@ -3,6 +3,7 @@ package org.timur.roadmap.tennisscoreboard.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchRequest;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchResponse;
 import org.timur.roadmap.tennisscoreboard.dto.MatchDto;
+import org.timur.roadmap.tennisscoreboard.dto.PointRequest;
+import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
 import org.timur.roadmap.tennisscoreboard.service.MatchService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/matches")
@@ -36,5 +40,13 @@ public class MatchController {
             @Valid @RequestBody CreateMatchRequest request
     ) {
         return matchService.createMatch(request);
+    }
+
+    @PostMapping("/{uuid}/point")
+    public ScoreResponse addPoint(
+            @PathVariable("uuid") UUID uuid,
+            @Valid @RequestBody PointRequest request
+    ) {
+        return matchService.addPoint(uuid, request);
     }
 }

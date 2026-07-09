@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,5 +16,13 @@ public class OngoingMatchService {
 
     public void add(OngoingMatch match) {
         matches.put(match.getId(), match);
+    }
+
+    public Optional<OngoingMatch> find(UUID id) {
+        return Optional.of(matches.get(id));
+    }
+
+    public void remove(UUID id) {
+
     }
 }

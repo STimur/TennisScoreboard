@@ -3,6 +3,7 @@ package org.timur.roadmap.tennisscoreboard.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.entity.Match;
 
 import java.util.List;
@@ -28,5 +29,9 @@ public class MatchDao {
                     Match.class
             ).getResultList();
         }
+    }
+
+    public void save(OngoingMatch match) {
+
     }
 }

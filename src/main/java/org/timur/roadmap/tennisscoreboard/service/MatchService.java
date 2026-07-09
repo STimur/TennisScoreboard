@@ -1,13 +1,18 @@
 package org.timur.roadmap.tennisscoreboard.service;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchRequest;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchResponse;
 import org.timur.roadmap.tennisscoreboard.dto.MatchDto;
 import org.timur.roadmap.tennisscoreboard.dao.MatchDao;
+import org.timur.roadmap.tennisscoreboard.dto.PointRequest;
+import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
 import org.timur.roadmap.tennisscoreboard.entity.Player;
 import org.timur.roadmap.tennisscoreboard.mapper.MatchMapper;
+import org.timur.roadmap.tennisscoreboard.exception.MatchNotFoundException;
+import org.timur.roadmap.tennisscoreboard.mapper.OngoingMatchMapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,15 +22,20 @@ public class MatchService {
 
     private final MatchDao matchDao;
     private final MatchMapper matchMapper;
+    private final OngoingMatchMapper ongoingMatchMapper;
     private final PlayerService playerService;
     private final OngoingMatchService ongoingMatchService;
+    private final ScoreService scoreService;
 
     public MatchService(MatchDao matchDao, MatchMapper matchMapper,
-                        PlayerService playerService, OngoingMatchService ongoingMatchService) {
+                        OngoingMatchMapper ongoingMatchMapper, PlayerService playerService,
+                        OngoingMatchService ongoingMatchService, ScoreService scoreService) {
         this.matchDao = matchDao;
         this.matchMapper = matchMapper;
+        this.ongoingMatchMapper = ongoingMatchMapper;
         this.playerService = playerService;
         this.ongoingMatchService = ongoingMatchService;
+        this.scoreService = scoreService;
     }
 
     public List<MatchDto> getAllMatches() {
@@ -51,5 +61,21 @@ public class MatchService {
         ongoingMatchService.add(match);
 
         return new CreateMatchResponse(id);
+    }
+
+    public ScoreResponse addPoint(UUID id, @Valid PointRequest request) {
+        OngoingMatch match = ongoingMatchService.find(id)
+                .orElseThrow(MatchNotFoundException::new);
+
+        scoreService.addPoint(match, request.name());
+
+        if (match.isFinished()) {
+
+            matchDao.save(match);
+
+            ongoingMatchService.remove(id);
+        }
+
+        return ongoingMatchMapper.toDto(match);
     }
 }
