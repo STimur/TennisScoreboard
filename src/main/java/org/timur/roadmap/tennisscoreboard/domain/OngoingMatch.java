@@ -8,12 +8,13 @@ public class OngoingMatch {
     private final UUID id;
     private final Player firstPlayer;
     private final Player secondPlayer;
-    private Score score;
+    private final Score score;
 
     public OngoingMatch(UUID id, Player firstPlayer, Player secondPlayer) {
         this.id = id;
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
+        this.score = new Score(0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     public Player getFirstPlayer() {
