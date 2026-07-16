@@ -5,23 +5,28 @@ public class Game {
     private GamePoint firstPlayerPoints;
     private GamePoint secondPlayerPoints;
     private boolean isFinished;
-    private int winner;
+    private PlayerSide winner;
 
     public Game() {
         firstPlayerPoints = GamePoint.LOVE;
         secondPlayerPoints = GamePoint.LOVE;
         isFinished = false;
-        winner = 0;
+        winner = null;
     }
 
     public Game(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
         this.firstPlayerPoints = firstPlayerPoints;
         this.secondPlayerPoints = secondPlayerPoints;
         isFinished = false;
-        winner = 0;
+        winner = null;
     }
 
     public void addFirstPlayerPoint() {
+        if (firstPlayerPoints.equals(GamePoint.AD)) {
+            isFinished = true;
+            winner = PlayerSide.FIRST;
+            return;
+        }
         if (firstPlayerPoints.equals(GamePoint.FORTY)) {
             if (secondPlayerPoints.equals(GamePoint.FORTY)) {
                 firstPlayerPoints = GamePoint.AD;
@@ -32,7 +37,7 @@ public class Game {
                 return;
             }
             isFinished = true;
-            winner = 1;
+            winner = PlayerSide.FIRST;
             return;
         }
         firstPlayerPoints = firstPlayerPoints.next();
@@ -43,6 +48,11 @@ public class Game {
     }
 
     public void addSecondPlayerPoint() {
+        if (secondPlayerPoints.equals(GamePoint.AD)) {
+            isFinished = true;
+            winner = PlayerSide.SECOND;
+            return;
+        }
         if (secondPlayerPoints.equals(GamePoint.FORTY)) {
             if (firstPlayerPoints.equals(GamePoint.FORTY)) {
                 secondPlayerPoints = GamePoint.AD;
@@ -53,7 +63,7 @@ public class Game {
                 return;
             }
             isFinished = true;
-            winner = 2;
+            winner = PlayerSide.SECOND;
             return;
         }
         secondPlayerPoints = secondPlayerPoints.next();
@@ -63,7 +73,7 @@ public class Game {
         return secondPlayerPoints;
     }
 
-    public int getWinner() {
+    public PlayerSide getWinner() {
         return winner;
     }
 

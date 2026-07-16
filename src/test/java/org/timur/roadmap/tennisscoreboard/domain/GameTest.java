@@ -1,14 +1,13 @@
-package org.timur.roadmap.tennisscoreboard.service;
+package org.timur.roadmap.tennisscoreboard.domain;
 
 import org.junit.jupiter.api.Test;
-import org.timur.roadmap.tennisscoreboard.domain.Game;
-import org.timur.roadmap.tennisscoreboard.domain.GamePoint;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GameTest {
+public class GameTest {
 
     @Test
     void initialGameState() {
@@ -16,7 +15,7 @@ class GameTest {
 
         assertEquals(GamePoint.LOVE, game.getFirstPlayerPoints());
         assertEquals(GamePoint.LOVE, game.getSecondPlayerPoints());
-        assertEquals(0, game.getWinner());
+        assertNull(game.getWinner());
         assertFalse(game.isFinished());
     }
 
@@ -70,7 +69,17 @@ class GameTest {
         game.addFirstPlayerPoint();
 
         assertTrue(game.isFinished());
-        assertEquals(1, game.getWinner());
+        assertEquals(PlayerSide.FIRST, game.getWinner());
+    }
+
+    @Test
+    void givenFirstPlayerHasAdvantage_whenFirstPlayerScores_shouldBecomeWinner() {
+        Game game = new Game(GamePoint.AD, GamePoint.FORTY);
+
+        game.addFirstPlayerPoint();
+
+        assertTrue(game.isFinished());
+        assertEquals(PlayerSide.FIRST, game.getWinner());
     }
 
     @Test
@@ -99,6 +108,16 @@ class GameTest {
         game.addSecondPlayerPoint();
 
         assertTrue(game.isFinished());
-        assertEquals(2, game.getWinner());
+        assertEquals(PlayerSide.SECOND, game.getWinner());
+    }
+
+    @Test
+    void givenSecondPlayerHasAdvantage_whenSecondPlayerScores_shouldBecomeWinner() {
+        Game game = new Game(GamePoint.FORTY, GamePoint.AD);
+
+        game.addSecondPlayerPoint();
+
+        assertTrue(game.isFinished());
+        assertEquals(PlayerSide.SECOND, game.getWinner());
     }
 }
