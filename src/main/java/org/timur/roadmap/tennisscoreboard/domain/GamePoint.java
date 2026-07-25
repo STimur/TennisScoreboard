@@ -1,11 +1,17 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
 public enum GamePoint {
-    LOVE,
-    FIFTEEN,
-    THIRTY,
-    FORTY,
-    AD;
+    LOVE("0"),
+    FIFTEEN("15"),
+    THIRTY("30"),
+    FORTY("40"),
+    AD("AD");
+
+    private final String displayName;
+
+    GamePoint(String displayName) {
+        this.displayName = displayName;
+    }
 
     public GamePoint next() {
         return switch (this) {
@@ -14,5 +20,10 @@ public enum GamePoint {
             case THIRTY -> FORTY;
             default -> throw new IllegalStateException();
         };
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 }

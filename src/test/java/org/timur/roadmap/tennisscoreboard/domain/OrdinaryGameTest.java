@@ -7,64 +7,64 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GameTest {
+public class OrdinaryGameTest {
 
     @Test
     void initialGameState() {
-        Game game = new Game();
+        Game game = new OrdinaryGame();
 
-        assertEquals(GamePoint.LOVE, game.getFirstPlayerPoints());
-        assertEquals(GamePoint.LOVE, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), game.getFirstPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), game.getSecondPlayerPoints());
         assertNull(game.getWinner());
         assertFalse(game.isFinished());
     }
 
     @Test
     void shouldAddFirstPlayerPoint() {
-        Game game = new Game();
+        Game game = new OrdinaryGame();
 
         game.addFirstPlayerPoint();
-        assertEquals(GamePoint.FIFTEEN, game.getFirstPlayerPoints());
+        assertEquals(GamePoint.FIFTEEN.toString(), game.getFirstPlayerPoints());
         game.addFirstPlayerPoint();
-        assertEquals(GamePoint.THIRTY, game.getFirstPlayerPoints());
+        assertEquals(GamePoint.THIRTY.toString(), game.getFirstPlayerPoints());
         game.addFirstPlayerPoint();
-        assertEquals(GamePoint.FORTY, game.getFirstPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getFirstPlayerPoints());
     }
 
     @Test
     void shouldAddSecondPlayerPoint() {
-        Game game = new Game();
+        Game game = new OrdinaryGame();
 
         game.addSecondPlayerPoint();
-        assertEquals(GamePoint.FIFTEEN, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.FIFTEEN.toString(), game.getSecondPlayerPoints());
         game.addSecondPlayerPoint();
-        assertEquals(GamePoint.THIRTY, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.THIRTY.toString(), game.getSecondPlayerPoints());
         game.addSecondPlayerPoint();
-        assertEquals(GamePoint.FORTY, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getSecondPlayerPoints());
     }
 
     @Test
     void givenBothPlayersHaveForty_whenFirstPlayerScores_shouldHaveAdvantage() {
-        Game game = new Game(GamePoint.FORTY, GamePoint.FORTY);
+        Game game = new OrdinaryGame(GamePoint.FORTY, GamePoint.FORTY);
 
         game.addFirstPlayerPoint();
 
-        assertEquals(GamePoint.AD, game.getFirstPlayerPoints());
+        assertEquals(GamePoint.AD.toString(), game.getFirstPlayerPoints());
     }
 
     @Test
     void givenSecondPlayerHasAdvantage_whenFirstPlayerScores_shouldBecomeFortyForty() {
-        Game game = new Game(GamePoint.FORTY, GamePoint.AD);
+        Game game = new OrdinaryGame(GamePoint.FORTY, GamePoint.AD);
 
         game.addFirstPlayerPoint();
 
-        assertEquals(GamePoint.FORTY, game.getFirstPlayerPoints());
-        assertEquals(GamePoint.FORTY, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getFirstPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getSecondPlayerPoints());
     }
 
     @Test
     void givenSecondPlayerHasThirtyOrLess_whenFirstPlayerScores_shouldBecomeWinner() {
-        Game game = new Game(GamePoint.FORTY, GamePoint.THIRTY);
+        Game game = new OrdinaryGame(GamePoint.FORTY, GamePoint.THIRTY);
 
         game.addFirstPlayerPoint();
 
@@ -74,7 +74,7 @@ public class GameTest {
 
     @Test
     void givenFirstPlayerHasAdvantage_whenFirstPlayerScores_shouldBecomeWinner() {
-        Game game = new Game(GamePoint.AD, GamePoint.FORTY);
+        Game game = new OrdinaryGame(GamePoint.AD, GamePoint.FORTY);
 
         game.addFirstPlayerPoint();
 
@@ -84,26 +84,26 @@ public class GameTest {
 
     @Test
     void givenBothPlayersHaveForty_whenSecondPlayerScores_shouldHaveAdvantage() {
-        Game game = new Game(GamePoint.FORTY, GamePoint.FORTY);
+        Game game = new OrdinaryGame(GamePoint.FORTY, GamePoint.FORTY);
 
         game.addSecondPlayerPoint();
 
-        assertEquals(GamePoint.AD, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.AD.toString(), game.getSecondPlayerPoints());
     }
 
     @Test
     void givenFirstPlayerHasAdvantage_whenSecondPlayerScores_shouldBecomeFortyForty() {
-        Game game = new Game(GamePoint.AD, GamePoint.FORTY);
+        Game game = new OrdinaryGame(GamePoint.AD, GamePoint.FORTY);
 
         game.addSecondPlayerPoint();
 
-        assertEquals(GamePoint.FORTY, game.getFirstPlayerPoints());
-        assertEquals(GamePoint.FORTY, game.getSecondPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getFirstPlayerPoints());
+        assertEquals(GamePoint.FORTY.toString(), game.getSecondPlayerPoints());
     }
 
     @Test
     void givenFirstPlayerHasThirtyOrLess_whenSecondPlayerScores_shouldBecomeWinner() {
-        Game game = new Game(GamePoint.THIRTY, GamePoint.FORTY);
+        Game game = new OrdinaryGame(GamePoint.THIRTY, GamePoint.FORTY);
 
         game.addSecondPlayerPoint();
 
@@ -113,7 +113,7 @@ public class GameTest {
 
     @Test
     void givenSecondPlayerHasAdvantage_whenSecondPlayerScores_shouldBecomeWinner() {
-        Game game = new Game(GamePoint.FORTY, GamePoint.AD);
+        Game game = new OrdinaryGame(GamePoint.FORTY, GamePoint.AD);
 
         game.addSecondPlayerPoint();
 
