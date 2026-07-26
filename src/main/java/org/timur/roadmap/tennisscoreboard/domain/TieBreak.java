@@ -14,6 +14,13 @@ public class TieBreak implements Game {
         winner = null;
     }
 
+    public TieBreak() {
+        firstPlayerPoints = 0;
+        secondPlayerPoints = 0;
+        isFinished = false;
+        winner = null;
+    }
+
     @Override
     public void addFirstPlayerPoint() {
         firstPlayerPoints++;

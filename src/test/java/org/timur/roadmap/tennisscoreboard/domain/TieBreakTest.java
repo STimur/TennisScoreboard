@@ -73,7 +73,7 @@ public class TieBreakTest {
     }
 
     @Test
-    void givenFirstPlayerHasSeven_whenFirstPlayerScores_shouldBecomeWinner() {
+    void givenFirstPlayerHasSevenAndSecondSixOrLess_whenFirstPlayerScores_shouldBecomeWinner() {
         Game game = new TieBreak(7, 6);
 
         game.addFirstPlayerPoint();
@@ -89,6 +89,7 @@ public class TieBreakTest {
         game.addSecondPlayerPoint();
 
         assertEquals("7", game.getSecondPlayerPoints());
+        assertFalse(game.isFinished());
     }
 
     @Test
@@ -112,14 +113,14 @@ public class TieBreakTest {
     }
 
     @Test
-    void givenSecondPlayerHasEight_whenSecondPlayerScores_shouldBecomeWinner() {
+    void givenSecondPlayerHasEightAndFirstSevenOrLess_whenSecondPlayerScores_shouldBecomeWinner() {
         Game game = new TieBreak(7, 8);
 
         game.addSecondPlayerPoint();
 
-        assertTrue(game.isFinished());
-        assertEquals(PlayerSide.SECOND, game.getWinner());
         assertEquals("7", game.getFirstPlayerPoints());
         assertEquals("9", game.getSecondPlayerPoints());
+        assertTrue(game.isFinished());
+        assertEquals(PlayerSide.SECOND, game.getWinner());
     }
 }

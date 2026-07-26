@@ -56,7 +56,7 @@ public class Match {
     }
 
     public String getFirstPlayerPoints() {
-        return currentSet.getCurrentGame().getFirstPlayerPoints();
+        return currentSet.getFirstPlayerPoints();
     }
 
     public int getFirstPlayerGames() {
@@ -76,7 +76,7 @@ public class Match {
     }
 
     public String getSecondPlayerPoints() {
-        return currentSet.getCurrentGame().getSecondPlayerPoints();
+        return currentSet.getSecondPlayerPoints();
     }
 
     public int getSecondPlayerGames() {

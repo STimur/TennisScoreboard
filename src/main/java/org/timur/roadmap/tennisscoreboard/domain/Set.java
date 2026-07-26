@@ -5,11 +5,13 @@ public class Set {
     private Game currentGame;
     private int firstPlayerGames;
     private int secondPlayerGames;
+    private PlayerSide winner;
 
     public Set() {
         currentGame = new OrdinaryGame();
         firstPlayerGames = 0;
         secondPlayerGames = 0;
+        winner = null;
     }
 
     public Set(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
@@ -33,8 +35,14 @@ public class Set {
         if (currentGame.isFinished()) {
             firstPlayerGames++;
             if (!isFinished()) {
-                currentGame = new OrdinaryGame();
+                if (isTieBreak()) {
+                    currentGame = new TieBreak();
+                } else {
+                    currentGame = new OrdinaryGame();
+                }
+                return;
             }
+            winner = PlayerSide.FIRST;
         }
     }
 
@@ -43,16 +51,15 @@ public class Set {
         if (currentGame.isFinished()) {
             secondPlayerGames++;
             if (!isFinished()) {
-                currentGame = new OrdinaryGame();
+                if (isTieBreak()) {
+                    currentGame = new TieBreak();
+                } else {
+                    currentGame = new OrdinaryGame();
+                }
+                return;
             }
+            winner = PlayerSide.SECOND;
         }
-    }
-
-    public Game getCurrentGame() {
-        if (isFinished()) {
-            throw new SetFinishedException();
-        }
-        return currentGame;
     }
 
     public boolean isFinished() {
@@ -60,10 +67,7 @@ public class Set {
             return true;
         if (secondPlayerGames == 6 && firstPlayerGames < 5)
             return true;
-        if (firstPlayerGames == 7 || secondPlayerGames == 7)
-            return true;
-
-        return false;
+        return firstPlayerGames == 7 || secondPlayerGames == 7;
     }
 
     public int getFirstPlayerGames() {
@@ -74,6 +78,19 @@ public class Set {
         return secondPlayerGames;
     }
 
-    public static class SetFinishedException extends RuntimeException {
+    public PlayerSide getWinner() {
+        return winner;
+    }
+
+    public String getFirstPlayerPoints() {
+        return currentGame.getFirstPlayerPoints();
+    }
+
+    public String getSecondPlayerPoints() {
+        return currentGame.getSecondPlayerPoints();
+    }
+
+    private boolean isTieBreak() {
+        return firstPlayerGames == 6 && secondPlayerGames == 6;
     }
 }

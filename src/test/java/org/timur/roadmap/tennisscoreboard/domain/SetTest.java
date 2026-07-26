@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SetTest {
@@ -16,9 +16,9 @@ public class SetTest {
         set.addFirstPlayerPoint();
 
         assertEquals(0, set.getFirstPlayerGames());
-        assertEquals(GamePoint.FIFTEEN.toString(), set.getCurrentGame().getFirstPlayerPoints());
+        assertEquals(GamePoint.FIFTEEN.toString(), set.getFirstPlayerPoints());
         assertEquals(0, set.getSecondPlayerGames());
-        assertEquals(GamePoint.LOVE.toString(), set.getCurrentGame().getSecondPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), set.getSecondPlayerPoints());
         assertFalse(set.isFinished());
     }
 
@@ -29,9 +29,9 @@ public class SetTest {
         set.addFirstPlayerPoint();
 
         assertEquals(1, set.getFirstPlayerGames());
-        assertEquals(GamePoint.LOVE.toString(), set.getCurrentGame().getFirstPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), set.getFirstPlayerPoints());
         assertEquals(0, set.getSecondPlayerGames());
-        assertEquals(GamePoint.LOVE.toString(), set.getCurrentGame().getSecondPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), set.getSecondPlayerPoints());
         assertFalse(set.isFinished());
     }
 
@@ -42,19 +42,10 @@ public class SetTest {
         set.addSecondPlayerPoint();
 
         assertEquals(0, set.getFirstPlayerGames());
-        assertEquals(GamePoint.LOVE.toString(), set.getCurrentGame().getFirstPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), set.getFirstPlayerPoints());
         assertEquals(1, set.getSecondPlayerGames());
-        assertEquals(GamePoint.LOVE.toString(), set.getCurrentGame().getSecondPlayerPoints());
+        assertEquals(GamePoint.LOVE.toString(), set.getSecondPlayerPoints());
         assertFalse(set.isFinished());
-    }
-
-    @Test
-    public void getCurrentGameThrowsExceptionWhenSetIsFinished() {
-        Set set = new Set(5, 0, GamePoint.FORTY, GamePoint.FIFTEEN);
-
-        set.addFirstPlayerPoint();
-
-        assertThrows(Set.SetFinishedException.class, set::getCurrentGame);
     }
 
     @Test
@@ -66,6 +57,20 @@ public class SetTest {
         assertEquals(6, set.getFirstPlayerGames());
         assertEquals(0, set.getSecondPlayerGames());
         assertTrue(set.isFinished());
+        assertEquals(PlayerSide.FIRST, set.getWinner());
+    }
+
+    @Test
+    public void whenFirstPlayerGotToSixSixScoreTieBreakIsPlayed() {
+        Set set = new Set(5, 6, GamePoint.AD, GamePoint.FORTY);
+
+        set.addFirstPlayerPoint();
+        set.addFirstPlayerPoint();
+
+        assertEquals("1", set.getFirstPlayerPoints());
+        assertEquals("0", set.getSecondPlayerPoints());
+        assertFalse(set.isFinished());
+        assertNull(set.getWinner());
     }
 
     @Test
@@ -77,6 +82,20 @@ public class SetTest {
         assertEquals(5, set.getFirstPlayerGames());
         assertEquals(7, set.getSecondPlayerGames());
         assertTrue(set.isFinished());
+        assertEquals(PlayerSide.SECOND, set.getWinner());
+    }
+
+    @Test
+    public void whenSecondPlayerGotToSixSixScoreTieBreakIsPlayed() {
+        Set set = new Set(6, 5, GamePoint.FIFTEEN, GamePoint.FORTY);
+
+        set.addSecondPlayerPoint();
+        set.addSecondPlayerPoint();
+
+        assertEquals("0", set.getFirstPlayerPoints());
+        assertEquals("1", set.getSecondPlayerPoints());
+        assertFalse(set.isFinished());
+        assertNull(set.getWinner());
     }
 
     @Test
@@ -88,6 +107,7 @@ public class SetTest {
         assertEquals(7, set.getFirstPlayerGames());
         assertEquals(6, set.getSecondPlayerGames());
         assertTrue(set.isFinished());
+        assertEquals(PlayerSide.FIRST, set.getWinner());
     }
 
     @Test
@@ -99,5 +119,6 @@ public class SetTest {
         assertEquals(6, set.getFirstPlayerGames());
         assertEquals(7, set.getSecondPlayerGames());
         assertTrue(set.isFinished());
+        assertEquals(PlayerSide.SECOND, set.getWinner());
     }
 }
