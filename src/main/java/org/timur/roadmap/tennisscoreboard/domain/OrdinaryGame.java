@@ -21,10 +21,6 @@ public class OrdinaryGame implements Game {
         winner = null;
     }
 
-    public OrdinaryGame(int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
-
-    }
-
     @Override
     public void addFirstPlayerPoint() {
         if (firstPlayerPoints.equals(GamePoint.AD)) {

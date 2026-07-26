@@ -35,7 +35,7 @@ public class Set {
         if (currentGame.isFinished()) {
             firstPlayerGames++;
             if (!isFinished()) {
-                if (isTieBreak()) {
+                if (isTieBreakInProgress()) {
                     currentGame = new TieBreak();
                 } else {
                     currentGame = new OrdinaryGame();
@@ -51,7 +51,7 @@ public class Set {
         if (currentGame.isFinished()) {
             secondPlayerGames++;
             if (!isFinished()) {
-                if (isTieBreak()) {
+                if (isTieBreakInProgress()) {
                     currentGame = new TieBreak();
                 } else {
                     currentGame = new OrdinaryGame();
@@ -90,7 +90,7 @@ public class Set {
         return currentGame.getSecondPlayerPoints();
     }
 
-    private boolean isTieBreak() {
+    public boolean isTieBreakInProgress() {
         return firstPlayerGames == 6 && secondPlayerGames == 6;
     }
 }

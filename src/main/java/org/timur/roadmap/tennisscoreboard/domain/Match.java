@@ -20,6 +20,31 @@ public class Match {
         winnerName = null;
     }
 
+    public Match(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
+                 int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
+                 GamePoint firstPlayersPoints, GamePoint secondPlayerPoints) {
+        this.firstPlayerName = firstPlayerName;
+        this.secondPlayerName = secondPlayerName;
+        this.firstPlayerSets = firstPlayerSets;
+        this.secondPlayerSets = secondPlayerSets;
+        this.currentSet = new Set(firstPlayerGames, secondPlayerGames, firstPlayersPoints, secondPlayerPoints);
+        isFinished = false;
+        winnerName = null;
+    }
+
+    public Match(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
+                 int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
+                 int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
+        this.firstPlayerName = firstPlayerName;
+        this.secondPlayerName = secondPlayerName;
+        this.firstPlayerSets = firstPlayerSets;
+        this.secondPlayerSets = secondPlayerSets;
+        this.currentSet = new Set(firstPlayerGames, secondPlayerGames,
+                firstPlayerTieBreakPoints, secondPlayerTieBreakPoints);
+        isFinished = false;
+        winnerName = null;
+    }
+
     public String getFirstPlayerName() {
         return firstPlayerName;
     }
@@ -31,44 +56,56 @@ public class Match {
     public void addPoint(String playerName) {
         if (playerName.equals(firstPlayerName)) {
             currentSet.addFirstPlayerPoint();
-
             if (currentSet.isFinished()) {
                 firstPlayerSets++;
-
                 if (firstPlayerSets == 2) {
                     winnerName = firstPlayerName;
                     isFinished = true;
+                    return;
                 }
+                currentSet = new Set();
             }
-
         } else {
             currentSet.addSecondPlayerPoint();
-
             if (currentSet.isFinished()) {
                 secondPlayerSets++;
-
                 if (secondPlayerSets == 2) {
                     winnerName = secondPlayerName;
                     isFinished = true;
+                    return;
                 }
+                currentSet = new Set();
             }
         }
     }
 
     public String getFirstPlayerPoints() {
+        if (isFinished || isTieBreakInProgress())
+            return null;
+
         return currentSet.getFirstPlayerPoints();
     }
 
-    public int getFirstPlayerGames() {
-        return 0;
+    private boolean isTieBreakInProgress() {
+        return currentSet.isTieBreakInProgress();
+    }
+
+    public Integer getFirstPlayerGames() {
+        if (isFinished)
+            return null;
+
+        return currentSet.getFirstPlayerGames();
     }
 
     public int getFirstPlayerSets() {
-        return 0;
+        return firstPlayerSets;
     }
 
     public Integer getFirstPlayerTieBreakPoints() {
-        return null;
+        if (!isTieBreakInProgress())
+            return null;
+
+        return Integer.valueOf(currentSet.getFirstPlayerPoints());
     }
 
     public String getSecondPlayerName() {
@@ -76,22 +113,31 @@ public class Match {
     }
 
     public String getSecondPlayerPoints() {
+        if (isFinished || isTieBreakInProgress())
+            return null;
+
         return currentSet.getSecondPlayerPoints();
     }
 
-    public int getSecondPlayerGames() {
-        return 0;
+    public Integer getSecondPlayerGames() {
+        if (isFinished)
+            return null;
+
+        return currentSet.getSecondPlayerGames();
     }
 
     public int getSecondPlayerSets() {
-        return 0;
+        return secondPlayerSets;
     }
 
     public Integer getSecondPlayerTieBreakPoints() {
-        return null;
+        if (!isTieBreakInProgress())
+            return null;
+
+        return Integer.valueOf(currentSet.getSecondPlayerPoints());
     }
 
     public String getWinnerName() {
-        return null;
+        return winnerName;
     }
 }
