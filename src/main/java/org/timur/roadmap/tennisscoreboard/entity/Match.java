@@ -57,7 +57,7 @@ public class Match {
 
     @Override
     public String toString() {
-        return "Match{" +
+        return "MatchScore{" +
                 "id=" + id +
                 ", player1='" + player1.getName() + '\'' +
                 ", player2='" + player2.getName() + '\'' +

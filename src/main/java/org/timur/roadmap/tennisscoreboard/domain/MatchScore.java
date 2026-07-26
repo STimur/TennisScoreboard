@@ -1,45 +1,45 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-public class Match {
+public class MatchScore {
 
     private final String firstPlayerName;
     private final String secondPlayerName;
     private int firstPlayerSets;
     private int secondPlayerSets;
-    private Set currentSet;
+    private SetScore currentSetScore;
     private boolean isFinished;
     private String winnerName;
 
-    public Match(String firstPlayerName, String secondPlayerName) {
+    public MatchScore(String firstPlayerName, String secondPlayerName) {
         this.firstPlayerName = firstPlayerName;
         this.secondPlayerName = secondPlayerName;
         this.firstPlayerSets = 0;
         this.secondPlayerSets = 0;
-        this.currentSet = new Set();
+        this.currentSetScore = new SetScore();
         isFinished = false;
         winnerName = null;
     }
 
-    public Match(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
-                 int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
-                 GamePoint firstPlayersPoints, GamePoint secondPlayerPoints) {
+    public MatchScore(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
+                      int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
+                      GamePoint firstPlayersPoints, GamePoint secondPlayerPoints) {
         this.firstPlayerName = firstPlayerName;
         this.secondPlayerName = secondPlayerName;
         this.firstPlayerSets = firstPlayerSets;
         this.secondPlayerSets = secondPlayerSets;
-        this.currentSet = new Set(firstPlayerGames, secondPlayerGames, firstPlayersPoints, secondPlayerPoints);
+        this.currentSetScore = new SetScore(firstPlayerGames, secondPlayerGames, firstPlayersPoints, secondPlayerPoints);
         isFinished = false;
         winnerName = null;
     }
 
-    public Match(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
-                 int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
-                 int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
+    public MatchScore(String firstPlayerName, String secondPlayerName, int firstPlayerSets,
+                      int secondPlayerSets, int firstPlayerGames, int secondPlayerGames,
+                      int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
         this.firstPlayerName = firstPlayerName;
         this.secondPlayerName = secondPlayerName;
         this.firstPlayerSets = firstPlayerSets;
         this.secondPlayerSets = secondPlayerSets;
-        this.currentSet = new Set(firstPlayerGames, secondPlayerGames,
+        this.currentSetScore = new SetScore(firstPlayerGames, secondPlayerGames,
                 firstPlayerTieBreakPoints, secondPlayerTieBreakPoints);
         isFinished = false;
         winnerName = null;
@@ -55,26 +55,26 @@ public class Match {
 
     public void addPoint(String playerName) {
         if (playerName.equals(firstPlayerName)) {
-            currentSet.addFirstPlayerPoint();
-            if (currentSet.isFinished()) {
+            currentSetScore.addFirstPlayerPoint();
+            if (currentSetScore.isFinished()) {
                 firstPlayerSets++;
                 if (firstPlayerSets == 2) {
                     winnerName = firstPlayerName;
                     isFinished = true;
                     return;
                 }
-                currentSet = new Set();
+                currentSetScore = new SetScore();
             }
         } else {
-            currentSet.addSecondPlayerPoint();
-            if (currentSet.isFinished()) {
+            currentSetScore.addSecondPlayerPoint();
+            if (currentSetScore.isFinished()) {
                 secondPlayerSets++;
                 if (secondPlayerSets == 2) {
                     winnerName = secondPlayerName;
                     isFinished = true;
                     return;
                 }
-                currentSet = new Set();
+                currentSetScore = new SetScore();
             }
         }
     }
@@ -83,18 +83,14 @@ public class Match {
         if (isFinished || isTieBreakInProgress())
             return null;
 
-        return currentSet.getFirstPlayerPoints();
-    }
-
-    private boolean isTieBreakInProgress() {
-        return currentSet.isTieBreakInProgress();
+        return currentSetScore.getFirstPlayerPoints();
     }
 
     public Integer getFirstPlayerGames() {
         if (isFinished)
             return null;
 
-        return currentSet.getFirstPlayerGames();
+        return currentSetScore.getFirstPlayerGames();
     }
 
     public int getFirstPlayerSets() {
@@ -105,7 +101,7 @@ public class Match {
         if (!isTieBreakInProgress())
             return null;
 
-        return Integer.valueOf(currentSet.getFirstPlayerPoints());
+        return Integer.valueOf(currentSetScore.getFirstPlayerPoints());
     }
 
     public String getSecondPlayerName() {
@@ -116,14 +112,14 @@ public class Match {
         if (isFinished || isTieBreakInProgress())
             return null;
 
-        return currentSet.getSecondPlayerPoints();
+        return currentSetScore.getSecondPlayerPoints();
     }
 
     public Integer getSecondPlayerGames() {
         if (isFinished)
             return null;
 
-        return currentSet.getSecondPlayerGames();
+        return currentSetScore.getSecondPlayerGames();
     }
 
     public int getSecondPlayerSets() {
@@ -134,10 +130,14 @@ public class Match {
         if (!isTieBreakInProgress())
             return null;
 
-        return Integer.valueOf(currentSet.getSecondPlayerPoints());
+        return Integer.valueOf(currentSetScore.getSecondPlayerPoints());
     }
 
     public String getWinnerName() {
         return winnerName;
+    }
+
+    private boolean isTieBreakInProgress() {
+        return currentSetScore.isTieBreakInProgress();
     }
 }

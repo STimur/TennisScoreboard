@@ -1,6 +1,6 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-public interface Game {
+public interface GameScore {
     void addFirstPlayerPoint();
     void addSecondPlayerPoint();
     boolean isFinished();

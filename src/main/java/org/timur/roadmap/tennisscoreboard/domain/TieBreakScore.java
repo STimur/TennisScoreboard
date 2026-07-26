@@ -1,20 +1,20 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-public class TieBreak implements Game {
+public class TieBreakScore implements GameScore {
 
     private Integer firstPlayerPoints;
     private Integer secondPlayerPoints;
     private boolean isFinished;
     private PlayerSide winner;
 
-    public TieBreak(int firstPlayerPoints, int secondPlayerPoints) {
+    public TieBreakScore(int firstPlayerPoints, int secondPlayerPoints) {
         this.firstPlayerPoints = firstPlayerPoints;
         this.secondPlayerPoints = secondPlayerPoints;
         isFinished = false;
         winner = null;
     }
 
-    public TieBreak() {
+    public TieBreakScore() {
         firstPlayerPoints = 0;
         secondPlayerPoints = 0;
         isFinished = false;

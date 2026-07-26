@@ -70,7 +70,7 @@ public class MatchService {
         OngoingMatch match = ongoingMatchService.find(id)
                 .orElseThrow(MatchNotFoundException::new);
 
-        scoreService.addPoint(match, request.name());
+        match.addPoint(request.name());
 
         if (match.isFinished()) {
 

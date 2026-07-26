@@ -1,44 +1,44 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-public class Set {
+public class SetScore {
 
-    private Game currentGame;
+    private GameScore currentGameScore;
     private int firstPlayerGames;
     private int secondPlayerGames;
     private PlayerSide winner;
 
-    public Set() {
-        currentGame = new OrdinaryGame();
+    public SetScore() {
+        currentGameScore = new OrdinaryGameScore();
         firstPlayerGames = 0;
         secondPlayerGames = 0;
         winner = null;
     }
 
-    public Set(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
-        currentGame = new OrdinaryGame(firstPlayerPoints, secondPlayerPoints);
+    public SetScore(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
+        currentGameScore = new OrdinaryGameScore(firstPlayerPoints, secondPlayerPoints);
     }
 
-    public Set(int firstPlayerGames, int secondPlayerGames, GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
+    public SetScore(int firstPlayerGames, int secondPlayerGames, GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
         this.firstPlayerGames = firstPlayerGames;
         this.secondPlayerGames = secondPlayerGames;
-        currentGame = new OrdinaryGame(firstPlayerPoints, secondPlayerPoints);
+        currentGameScore = new OrdinaryGameScore(firstPlayerPoints, secondPlayerPoints);
     }
 
-    public Set(int firstPlayerGames, int secondPlayerGames, int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
+    public SetScore(int firstPlayerGames, int secondPlayerGames, int firstPlayerTieBreakPoints, int secondPlayerTieBreakPoints) {
         this.firstPlayerGames = firstPlayerGames;
         this.secondPlayerGames = secondPlayerGames;
-        currentGame = new TieBreak(firstPlayerTieBreakPoints, secondPlayerTieBreakPoints);
+        currentGameScore = new TieBreakScore(firstPlayerTieBreakPoints, secondPlayerTieBreakPoints);
     }
 
     public void addFirstPlayerPoint() {
-        currentGame.addFirstPlayerPoint();
-        if (currentGame.isFinished()) {
+        currentGameScore.addFirstPlayerPoint();
+        if (currentGameScore.isFinished()) {
             firstPlayerGames++;
             if (!isFinished()) {
                 if (isTieBreakInProgress()) {
-                    currentGame = new TieBreak();
+                    currentGameScore = new TieBreakScore();
                 } else {
-                    currentGame = new OrdinaryGame();
+                    currentGameScore = new OrdinaryGameScore();
                 }
                 return;
             }
@@ -47,14 +47,14 @@ public class Set {
     }
 
     public void addSecondPlayerPoint() {
-        currentGame.addSecondPlayerPoint();
-        if (currentGame.isFinished()) {
+        currentGameScore.addSecondPlayerPoint();
+        if (currentGameScore.isFinished()) {
             secondPlayerGames++;
             if (!isFinished()) {
                 if (isTieBreakInProgress()) {
-                    currentGame = new TieBreak();
+                    currentGameScore = new TieBreakScore();
                 } else {
-                    currentGame = new OrdinaryGame();
+                    currentGameScore = new OrdinaryGameScore();
                 }
                 return;
             }
@@ -83,11 +83,11 @@ public class Set {
     }
 
     public String getFirstPlayerPoints() {
-        return currentGame.getFirstPlayerPoints();
+        return currentGameScore.getFirstPlayerPoints();
     }
 
     public String getSecondPlayerPoints() {
-        return currentGame.getSecondPlayerPoints();
+        return currentGameScore.getSecondPlayerPoints();
     }
 
     public boolean isTieBreakInProgress() {

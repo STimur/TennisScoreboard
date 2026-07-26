@@ -1,20 +1,20 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-public class OrdinaryGame implements Game {
+public class OrdinaryGameScore implements GameScore {
 
     private GamePoint firstPlayerPoints;
     private GamePoint secondPlayerPoints;
     private boolean isFinished;
     private PlayerSide winner;
 
-    public OrdinaryGame() {
+    public OrdinaryGameScore() {
         firstPlayerPoints = GamePoint.LOVE;
         secondPlayerPoints = GamePoint.LOVE;
         isFinished = false;
         winner = null;
     }
 
-    public OrdinaryGame(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
+    public OrdinaryGameScore(GamePoint firstPlayerPoints, GamePoint secondPlayerPoints) {
         this.firstPlayerPoints = firstPlayerPoints;
         this.secondPlayerPoints = secondPlayerPoints;
         isFinished = false;

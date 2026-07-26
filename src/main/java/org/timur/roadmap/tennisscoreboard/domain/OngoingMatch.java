@@ -8,13 +8,13 @@ public class OngoingMatch {
     private final UUID id;
     private final Player firstPlayer;
     private final Player secondPlayer;
-    private final Score score;
+    private final MatchScore score;
 
     public OngoingMatch(UUID id, Player firstPlayer, Player secondPlayer) {
         this.id = id;
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
-        this.score = new Score(0, 0, 0, 0, 0, 0, 0, 0);
+        this.score = new MatchScore(firstPlayer.getName(), secondPlayer.getName());
     }
 
     public Player getFirstPlayer() {
@@ -25,7 +25,7 @@ public class OngoingMatch {
         return secondPlayer;
     }
 
-    public Score getScore() {
+    public MatchScore getScore() {
         return score;
     }
 
@@ -35,5 +35,9 @@ public class OngoingMatch {
 
     public boolean isFinished() {
         return false;
+    }
+
+    public void addPoint(String playerName) {
+        score.addPoint(playerName);
     }
 }
