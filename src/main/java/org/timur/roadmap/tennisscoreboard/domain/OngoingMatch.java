@@ -1,36 +1,22 @@
 package org.timur.roadmap.tennisscoreboard.domain;
 
-import org.timur.roadmap.tennisscoreboard.entity.Player;
-
 import java.util.UUID;
 
 public class OngoingMatch {
     private final UUID id;
-    private final Player firstPlayer;
-    private final Player secondPlayer;
     private final MatchScore score;
 
-    public OngoingMatch(UUID id, Player firstPlayer, Player secondPlayer) {
+    public OngoingMatch(UUID id, String firstPlayerName, String secondPlayerName) {
         this.id = id;
-        this.firstPlayer = firstPlayer;
-        this.secondPlayer = secondPlayer;
-        this.score = new MatchScore(firstPlayer.getName(), secondPlayer.getName());
-    }
-
-    public Player getFirstPlayer() {
-        return firstPlayer;
-    }
-
-    public Player getSecondPlayer() {
-        return secondPlayer;
-    }
-
-    public MatchScore getScore() {
-        return score;
+        this.score = new MatchScore(firstPlayerName, secondPlayerName);
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public MatchScore getScore() {
+        return score;
     }
 
     public boolean isFinished() {

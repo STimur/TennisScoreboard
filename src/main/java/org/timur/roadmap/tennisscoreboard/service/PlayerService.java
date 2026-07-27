@@ -19,8 +19,10 @@ public class PlayerService {
         return playerDao.findAll();
     }
 
-    public Player findOrCreate(String name) {
-        return playerDao.findByName(name)
+    public String findOrCreate(String name) {
+        Player player = playerDao.findByName(name)
                 .orElseGet(() -> playerDao.save(new Player(name)));
+
+        return player.getName();
     }
 }

@@ -50,15 +50,15 @@ public class MatchService {
 
     public CreateMatchResponse createMatch(CreateMatchRequest request) {
 
-        Player firstPlayer = playerService.findOrCreate(request.firstPlayerName());
-        Player secondPlayer = playerService.findOrCreate(request.secondPlayerName());
+        String firstPlayerName = playerService.findOrCreate(request.firstPlayerName());
+        String secondPlayerName = playerService.findOrCreate(request.secondPlayerName());
 
         UUID id = UUID.randomUUID();
 
         OngoingMatch match = new OngoingMatch(
                 id,
-                firstPlayer,
-                secondPlayer
+                firstPlayerName,
+                secondPlayerName
         );
 
         ongoingMatchService.add(match);
