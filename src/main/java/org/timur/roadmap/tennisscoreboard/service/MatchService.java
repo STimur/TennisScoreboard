@@ -50,8 +50,8 @@ public class MatchService {
 
     public CreateMatchResponse createMatch(CreateMatchRequest request) {
 
-        String firstPlayerName = playerService.findOrCreate(request.firstPlayerName());
-        String secondPlayerName = playerService.findOrCreate(request.secondPlayerName());
+        String firstPlayerName = playerService.findOrCreate(request.firstPlayerName()).getName();
+        String secondPlayerName = playerService.findOrCreate(request.secondPlayerName()).getName();
 
         UUID id = UUID.randomUUID();
 
@@ -67,19 +67,17 @@ public class MatchService {
     }
 
     public ScoreResponse addPoint(UUID id, @Valid PointRequest request) {
-        OngoingMatch match = ongoingMatchService.find(id)
+        OngoingMatch ongoingMatch = ongoingMatchService.find(id)
                 .orElseThrow(MatchNotFoundException::new);
 
-        match.addPoint(request.name());
+        ongoingMatch.addPoint(request.name());
 
-        if (match.isFinished()) {
-
-            matchDao.save(match);
-
+        if (ongoingMatch.isFinished()) {
+            saveFinishedMatch(ongoingMatch);
             ongoingMatchService.remove(id);
         }
 
-        return ongoingMatchMapper.toDto(match);
+        return ongoingMatchMapper.toDto(ongoingMatch);
     }
 
     public ScoreResponse getScore(UUID uuid) {
@@ -100,5 +98,16 @@ public class MatchService {
                 page,
                 matches.totalPages()
         );
+    }
+
+    private void saveFinishedMatch(OngoingMatch ongoingMatch) {
+        Player firstPlayer = playerService.findOrCreate(ongoingMatch.getFirstPlayerName());
+        Player secondPlayer = playerService.findOrCreate(ongoingMatch.getSecondPlayerName());
+
+        Player winner = ongoingMatch.getWinnerName().equals(firstPlayer.getName()) ? firstPlayer : secondPlayer;
+
+        Match finishedMatch = new Match(firstPlayer, secondPlayer, winner);
+
+        matchDao.save(finishedMatch);
     }
 }

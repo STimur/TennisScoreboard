@@ -39,6 +39,12 @@ public class Match {
     )
     private Player winner;
 
+    public Match(Player firstPlayer, Player secondPlayer, Player winner) {
+        this.player1 = firstPlayer;
+        this.player2 = secondPlayer;
+        this.winner = winner;
+    }
+
     public Integer getId() {
         return id;
     }

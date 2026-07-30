@@ -2,9 +2,9 @@ package org.timur.roadmap.tennisscoreboard.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.dto.PageResult;
 import org.timur.roadmap.tennisscoreboard.entity.Match;
 
@@ -35,8 +35,25 @@ public class MatchDao {
         }
     }
 
-    public void save(OngoingMatch match) {
+    public void save(Match match) {
+        Transaction transaction = null;
 
+        try (Session session = sessionFactory.openSession()) {
+
+            transaction = session.beginTransaction();
+
+            session.persist(match);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+
+            throw e;
+        }
     }
 
     public PageResult<Match> findFinishedMatches(int page, String playerName) {

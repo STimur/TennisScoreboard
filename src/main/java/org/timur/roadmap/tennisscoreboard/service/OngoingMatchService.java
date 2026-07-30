@@ -23,6 +23,6 @@ public class OngoingMatchService {
     }
 
     public void remove(UUID id) {
-
+        matches.remove(id);
     }
 }

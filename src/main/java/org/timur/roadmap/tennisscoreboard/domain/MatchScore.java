@@ -53,6 +53,10 @@ public class MatchScore {
         return secondPlayerName;
     }
 
+    public boolean isFinished() {
+        return isFinished;
+    }
+
     public void addPoint(String playerName) {
         if (playerName.equals(firstPlayerName)) {
             currentSetScore.addFirstPlayerPoint();

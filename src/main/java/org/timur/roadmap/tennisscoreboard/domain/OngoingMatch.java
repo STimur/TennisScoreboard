@@ -20,10 +20,22 @@ public class OngoingMatch {
     }
 
     public boolean isFinished() {
-        return false;
+        return score.isFinished();
     }
 
     public void addPoint(String playerName) {
         score.addPoint(playerName);
+    }
+
+    public String getFirstPlayerName() {
+        return score.getFirstPlayerName();
+    }
+
+    public String getSecondPlayerName() {
+        return score.getSecondPlayerName();
+    }
+
+    public String getWinnerName() {
+        return score.getWinnerName();
     }
 }
