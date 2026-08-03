@@ -19,7 +19,7 @@ public class OngoingMatchService {
     }
 
     public Optional<OngoingMatch> find(UUID id) {
-        return Optional.of(matches.get(id));
+        return Optional.ofNullable(matches.get(id));
     }
 
     public void remove(UUID id) {

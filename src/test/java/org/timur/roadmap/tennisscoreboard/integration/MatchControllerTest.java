@@ -15,7 +15,6 @@ import org.timur.roadmap.tennisscoreboard.config.DataSourceConfig;
 import org.timur.roadmap.tennisscoreboard.config.FlywayConfig;
 import org.timur.roadmap.tennisscoreboard.config.HibernateConfig;
 import org.timur.roadmap.tennisscoreboard.config.WebConfig;
-import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchRequest;
 import org.timur.roadmap.tennisscoreboard.dto.CreateMatchResponse;
 import org.timur.roadmap.tennisscoreboard.service.MatchService;
@@ -23,6 +22,7 @@ import org.timur.roadmap.tennisscoreboard.service.MatchService;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -56,17 +56,38 @@ class MatchControllerTest {
 
         UUID matchId = resp.id();
 
+
+        for (int i = 0; i < 48; i++) { // 48 is 6:0 6:0 win
+            mockMvc.perform(
+                    post("/matches/{id}/point", matchId)
+                            .contentType(
+                                    MediaType.APPLICATION_JSON
+                            )
+                            .content("""
+                                    {
+                                      "name": "Player 1"
+                                    }
+                                    """)
+            );
+        }
+
+        // match should have been removed from ongoing matches
+        // so api call should return 404 message i guess
         mockMvc.perform(
-                        post("/matches/{id}/point", matchId)
-                                .contentType(
-                                        MediaType.APPLICATION_JSON
-                                )
-                                .content("""
-                                        {
-                                          "name": "Player 1"
-                                        }
-                                        """)
+                post("/matches/{id}/point", matchId)
+                        .contentType(
+                                MediaType.APPLICATION_JSON
+                        )
+                        .content("""
+                                    {
+                                      "name": "Player 1"
+                                    }
+                                    """)
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value("Матч с таким uuid не найден")
+                );
     }
 }
