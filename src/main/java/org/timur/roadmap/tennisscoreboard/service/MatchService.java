@@ -28,7 +28,6 @@ public class MatchService {
     private final OngoingMatchMapper ongoingMatchMapper;
     private final PlayerService playerService;
     private final OngoingMatchService ongoingMatchService;
-    private final ScoreService scoreService;
 
     public MatchService(MatchDao matchDao, MatchMapper matchMapper,
                         OngoingMatchMapper ongoingMatchMapper, PlayerService playerService,
@@ -38,7 +37,6 @@ public class MatchService {
         this.ongoingMatchMapper = ongoingMatchMapper;
         this.playerService = playerService;
         this.ongoingMatchService = ongoingMatchService;
-        this.scoreService = scoreService;
     }
 
     public List<MatchDto> getAllMatches() {
@@ -70,14 +68,16 @@ public class MatchService {
         OngoingMatch ongoingMatch = ongoingMatchService.find(id)
                 .orElseThrow(MatchNotFoundException::new);
 
-        ongoingMatch.addPoint(request.name());
+        synchronized (ongoingMatch) {
+            ongoingMatch.addPoint(request.name());
 
-        if (ongoingMatch.isFinished()) {
-            saveFinishedMatch(ongoingMatch);
-            ongoingMatchService.remove(id);
+            if (ongoingMatch.isFinished()) {
+                saveFinishedMatch(ongoingMatch);
+                ongoingMatchService.remove(id);
+            }
+
+            return ongoingMatchMapper.toDto(ongoingMatch);
         }
-
-        return ongoingMatchMapper.toDto(ongoingMatch);
     }
 
     public ScoreResponse getScore(UUID uuid) {
