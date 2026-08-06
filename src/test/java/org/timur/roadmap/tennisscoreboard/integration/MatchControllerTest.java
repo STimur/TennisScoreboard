@@ -21,6 +21,7 @@ import org.timur.roadmap.tennisscoreboard.service.MatchService;
 
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +52,7 @@ class MatchControllerTest {
     }
 
     @Test
-    void shouldAddPoint() throws Exception {
+    void whenMatchIsOverAddingPointShouldReturn404WithErrorMessage() throws Exception {
         CreateMatchResponse resp = matchService.createMatch(new CreateMatchRequest("Player 1", "Player 2"));
 
         UUID matchId = resp.id();
@@ -84,6 +85,19 @@ class MatchControllerTest {
                                     }
                                     """)
                 )
+                .andExpect(status().isNotFound())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value("Матч с таким uuid не найден")
+                );
+    }
+
+    @Test
+    void shouldReturn404WithErrorMessageWhenGettingScoreOfNotExistingMatch() throws Exception {
+        UUID uuid = UUID.randomUUID();
+
+        mockMvc.perform(
+                get("/matches/{uuid}", uuid))
                 .andExpect(status().isNotFound())
                 .andExpect(
                         jsonPath("$.message")
