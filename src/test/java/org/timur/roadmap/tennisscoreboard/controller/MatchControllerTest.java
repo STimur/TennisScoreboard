@@ -36,7 +36,7 @@ public class MatchControllerTest {
     }
 
     @Test
-    void shouldReturn400WhenFirstPlayerIsBlank() throws Exception {
+    void shouldReturn400WhenFirstPlayerNameIsBlank() throws Exception {
         mockMvc.perform(
                         post("/matches")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,6 +45,45 @@ public class MatchControllerTest {
                                   "firstPlayerName": "",
                                   "secondPlayerName": "Nadal"
                                 }
+                                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value("Имя первого игрока не должно быть пустым")
+                );
+
+        verifyNoInteractions(matchService);
+    }
+
+    @Test
+    void shouldReturn400WhenSecondPlayerNameIsBlank() throws Exception {
+        mockMvc.perform(
+                        post("/matches")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                {
+                                  "firstPlayerName": "Federer",
+                                  "secondPlayerName": null
+                                }
+                                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value("Имя второго игрока не должно быть пустым")
+                );
+
+        verifyNoInteractions(matchService);
+    }
+
+    @Test
+    void shouldReturn400WhenBothPlayerNamesAreBlank() throws Exception {
+        mockMvc.perform(
+                        post("/matches")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                {}
                                 """)
                 )
                 .andExpect(status().isBadRequest())

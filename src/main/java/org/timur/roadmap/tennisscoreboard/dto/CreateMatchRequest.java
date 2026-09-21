@@ -6,7 +6,7 @@ public record CreateMatchRequest(
         @NotBlank(message = "Имя первого игрока не должно быть пустым")
         String firstPlayerName,
 
-        @NotBlank
+        @NotBlank(message = "Имя второго игрока не должно быть пустым")
         String secondPlayerName
 ) {
 }
