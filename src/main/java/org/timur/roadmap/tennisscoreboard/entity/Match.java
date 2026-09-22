@@ -39,6 +39,10 @@ public class Match {
     )
     private Player winner;
 
+    protected Match() {
+        // for Hibernate
+    }
+
     public Match(Player firstPlayer, Player secondPlayer, Player winner) {
         this.player1 = firstPlayer;
         this.player2 = secondPlayer;
