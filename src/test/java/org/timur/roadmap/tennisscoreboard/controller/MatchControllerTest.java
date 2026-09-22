@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.timur.roadmap.tennisscoreboard.service.MatchService;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +50,7 @@ public class MatchControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(
-                        jsonPath("$.message")
+                        jsonPath("$.errors[?(@.field == 'firstPlayerName')].message")
                                 .value("Имя первого игрока не должно быть пустым")
                 );
 
@@ -70,7 +71,7 @@ public class MatchControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(
-                        jsonPath("$.message")
+                        jsonPath("$.errors[?(@.field == 'secondPlayerName')].message")
                                 .value("Имя второго игрока не должно быть пустым")
                 );
 
@@ -87,10 +88,11 @@ public class MatchControllerTest {
                                 """)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(
-                        jsonPath("$.message")
-                                .value("Имя первого игрока не должно быть пустым")
-                );
+                .andExpect(jsonPath("$.errors[*].message",
+                        containsInAnyOrder(
+                                "Имя первого игрока не должно быть пустым",
+                                "Имя второго игрока не должно быть пустым"
+                        )));
 
         verifyNoInteractions(matchService);
     }
@@ -109,7 +111,7 @@ public class MatchControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(
-                        jsonPath("$.message")
+                        jsonPath("$.errors[?(@.field == 'playersAreDifferent')].message")
                                 .value("Имена игроков не могут совпадать")
                 );
 

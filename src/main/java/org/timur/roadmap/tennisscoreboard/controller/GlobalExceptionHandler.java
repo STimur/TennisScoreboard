@@ -6,7 +6,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.timur.roadmap.tennisscoreboard.dto.ErrorResponse;
+import org.timur.roadmap.tennisscoreboard.dto.ValidationError;
+import org.timur.roadmap.tennisscoreboard.dto.ValidationErrorResponse;
 import org.timur.roadmap.tennisscoreboard.exception.MatchNotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,13 +26,29 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
-        String message = exception.getBindingResult()
-                .getFieldError()
-                .getDefaultMessage();
+    public ResponseEntity<ValidationErrorResponse> handleValidation(MethodArgumentNotValidException exception) {
+        List<ValidationError> errors = new ArrayList<>();
+
+        exception.getBindingResult()
+                .getFieldErrors()
+                .forEach(error ->
+                        errors.add(new ValidationError(
+                                error.getField(),
+                                error.getDefaultMessage()
+                        ))
+                );
+
+        exception.getBindingResult()
+                .getGlobalErrors()
+                .forEach(error ->
+                        errors.add(new ValidationError(
+                                null,
+                                error.getDefaultMessage()
+                        ))
+                );
 
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorResponse(message));
+                .body(new ValidationErrorResponse(errors));
     }
 }
