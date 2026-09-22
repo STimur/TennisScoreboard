@@ -94,4 +94,25 @@ public class MatchControllerTest {
 
         verifyNoInteractions(matchService);
     }
+
+    @Test
+    void shouldReturn400WhenPlayersHaveSameNames() throws Exception {
+        mockMvc.perform(
+                        post("/matches")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                {
+                                  "firstPlayerName": "Sinner",
+                                  "secondPlayerName": "Sinner"
+                                }
+                                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value("Имена игроков не могут совпадать")
+                );
+
+        verifyNoInteractions(matchService);
+    }
 }
