@@ -53,7 +53,7 @@ public class MatchController {
 
     @GetMapping
     public FinishedMatchesResponse getMatches(
-            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "player_name", required = false) String playerName
     ) {
         return matchService.getFinishedMatches(page, playerName);

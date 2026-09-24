@@ -88,7 +88,7 @@ public class MatchService {
     }
 
     public FinishedMatchesResponse getFinishedMatches(int page, String playerName) {
-        PageResult<Match> matches = matchDao.findFinishedMatches(page, playerName);
+        PageResult<Match> matches = matchDao.findFinishedMatches(page - 1, playerName);
 
         return new FinishedMatchesResponse(
                 matches.items()
