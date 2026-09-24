@@ -24,7 +24,10 @@ public class HibernateConfig {
                             .applySetting("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
                             .applySetting("hibernate.hbm2ddl.auto", "validate")
                             .applySetting("hibernate.show_sql", "true")
+                            // Передаем DataSource от Spring
                             .applySetting("hibernate.connection.datasource", dataSource)
+                            // ВАЖНО: говорим Hibernate привязывать сессию к текущему Thread
+                            .applySetting("hibernate.current_session_context_class", "thread")
                             .build();
 
             MetadataSources sources = new MetadataSources(registry)

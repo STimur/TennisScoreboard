@@ -13,6 +13,7 @@ import org.timur.roadmap.tennisscoreboard.dto.PointRequest;
 import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
 import org.timur.roadmap.tennisscoreboard.entity.Match;
 import org.timur.roadmap.tennisscoreboard.entity.Player;
+import org.timur.roadmap.tennisscoreboard.infrastructure.TransactionRunner;
 import org.timur.roadmap.tennisscoreboard.mapper.MatchMapper;
 import org.timur.roadmap.tennisscoreboard.exception.MatchNotFoundException;
 import org.timur.roadmap.tennisscoreboard.mapper.OngoingMatchMapper;
@@ -28,86 +29,99 @@ public class MatchService {
     private final OngoingMatchMapper ongoingMatchMapper;
     private final PlayerService playerService;
     private final OngoingMatchService ongoingMatchService;
+    private final TransactionRunner txRunner;
 
     public MatchService(MatchDao matchDao, MatchMapper matchMapper,
                         OngoingMatchMapper ongoingMatchMapper, PlayerService playerService,
-                        OngoingMatchService ongoingMatchService, ScoreService scoreService) {
+                        OngoingMatchService ongoingMatchService, TransactionRunner txRunner) {
         this.matchDao = matchDao;
         this.matchMapper = matchMapper;
         this.ongoingMatchMapper = ongoingMatchMapper;
         this.playerService = playerService;
         this.ongoingMatchService = ongoingMatchService;
+        this.txRunner = txRunner;
     }
 
     public List<MatchDto> getAllMatches() {
-        return matchDao.findAll()
-                .stream()
-                .map(matchMapper::toDto)
-                .toList();
+        return txRunner.runInTransaction(
+                () -> matchDao.findAll()
+                        .stream()
+                        .map(matchMapper::toDto)
+                        .toList()
+        );
     }
 
     public CreateMatchResponse createMatch(CreateMatchRequest request) {
+        return txRunner.runInTransaction(() -> {
+            String firstPlayerName = playerService.findOrCreate(request.firstPlayerName()).getName();
+            String secondPlayerName = playerService.findOrCreate(request.secondPlayerName()).getName();
 
-        String firstPlayerName = playerService.findOrCreate(request.firstPlayerName()).getName();
-        String secondPlayerName = playerService.findOrCreate(request.secondPlayerName()).getName();
+            UUID id = UUID.randomUUID();
 
-        UUID id = UUID.randomUUID();
+            OngoingMatch match = new OngoingMatch(
+                    id,
+                    firstPlayerName,
+                    secondPlayerName
+            );
 
-        OngoingMatch match = new OngoingMatch(
-                id,
-                firstPlayerName,
-                secondPlayerName
-        );
+            ongoingMatchService.add(match);
 
-        ongoingMatchService.add(match);
-
-        return new CreateMatchResponse(id);
+            return new CreateMatchResponse(id);
+        });
     }
 
     public ScoreResponse addPoint(UUID id, @Valid PointRequest request) {
-        OngoingMatch ongoingMatch = ongoingMatchService.find(id)
-                .orElseThrow(MatchNotFoundException::new);
+        return txRunner.runInTransaction(() -> {
+            OngoingMatch ongoingMatch = ongoingMatchService.find(id)
+                    .orElseThrow(MatchNotFoundException::new);
 
-        synchronized (ongoingMatch) {
-            ongoingMatch.addPoint(request.name());
+            synchronized (ongoingMatch) {
+                ongoingMatch.addPoint(request.name());
 
-            if (ongoingMatch.isFinished()) {
-                saveFinishedMatch(ongoingMatch);
-                ongoingMatchService.remove(id);
+                if (ongoingMatch.isFinished()) {
+                    saveFinishedMatch(ongoingMatch);
+                    ongoingMatchService.remove(id);
+                }
+
+                return ongoingMatchMapper.toDto(ongoingMatch);
             }
-
-            return ongoingMatchMapper.toDto(ongoingMatch);
-        }
+        });
     }
 
     public ScoreResponse getScore(UUID uuid) {
-        OngoingMatch match = ongoingMatchService.find(uuid)
-                .orElseThrow(MatchNotFoundException::new);
+        return txRunner.runInTransaction(() -> {
+            OngoingMatch match = ongoingMatchService.find(uuid)
+                    .orElseThrow(MatchNotFoundException::new);
 
-        return ongoingMatchMapper.toDto(match);
+            return ongoingMatchMapper.toDto(match);
+        });
     }
 
     public FinishedMatchesResponse getFinishedMatches(int page, String playerName) {
-        PageResult<Match> matches = matchDao.findFinishedMatches(page - 1, playerName);
+        return txRunner.runInTransaction(() -> {
+            PageResult<Match> matches = matchDao.findFinishedMatches(page - 1, playerName);
 
-        return new FinishedMatchesResponse(
-                matches.items()
-                        .stream()
-                        .map(matchMapper::toFinishedDto)
-                        .toList(),
-                page,
-                matches.totalPages()
-        );
+            return new FinishedMatchesResponse(
+                    matches.items()
+                            .stream()
+                            .map(matchMapper::toFinishedDto)
+                            .toList(),
+                    page,
+                    matches.totalPages()
+            );
+        });
     }
 
     private void saveFinishedMatch(OngoingMatch ongoingMatch) {
-        Player firstPlayer = playerService.findOrCreate(ongoingMatch.getFirstPlayerName());
-        Player secondPlayer = playerService.findOrCreate(ongoingMatch.getSecondPlayerName());
+        txRunner.runInTransaction(() -> {
+            Player firstPlayer = playerService.findOrCreate(ongoingMatch.getFirstPlayerName());
+            Player secondPlayer = playerService.findOrCreate(ongoingMatch.getSecondPlayerName());
 
-        Player winner = ongoingMatch.getWinnerName().equals(firstPlayer.getName()) ? firstPlayer : secondPlayer;
+            Player winner = ongoingMatch.getWinnerName().equals(firstPlayer.getName()) ? firstPlayer : secondPlayer;
 
-        Match finishedMatch = new Match(firstPlayer, secondPlayer, winner);
+            Match finishedMatch = new Match(firstPlayer, secondPlayer, winner);
 
-        matchDao.save(finishedMatch);
+            matchDao.save(finishedMatch);
+        });
     }
 }
