@@ -57,7 +57,6 @@ class MatchControllerTest {
 
         UUID matchId = resp.id();
 
-
         for (int i = 0; i < 48; i++) { // 48 is 6:0 6:0 win
             mockMvc.perform(
                     post("/matches/{id}/point", matchId)

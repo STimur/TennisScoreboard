@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.timur.roadmap.tennisscoreboard.dto.ErrorResponse;
 import org.timur.roadmap.tennisscoreboard.dto.ValidationError;
 import org.timur.roadmap.tennisscoreboard.dto.ValidationErrorResponse;
+import org.timur.roadmap.tennisscoreboard.exception.DataAccessException;
 import org.timur.roadmap.tennisscoreboard.exception.MatchNotFoundException;
 
 import java.util.ArrayList;
@@ -50,5 +51,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(new ValidationErrorResponse(errors));
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException exception) {
+        ErrorResponse response = new ErrorResponse(exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 }

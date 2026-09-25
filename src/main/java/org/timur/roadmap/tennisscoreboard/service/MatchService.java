@@ -71,30 +71,26 @@ public class MatchService {
     }
 
     public ScoreResponse addPoint(UUID id, @Valid PointRequest request) {
-        return txRunner.runInTransaction(() -> {
-            OngoingMatch ongoingMatch = ongoingMatchService.find(id)
-                    .orElseThrow(MatchNotFoundException::new);
+        OngoingMatch ongoingMatch = ongoingMatchService.find(id)
+                .orElseThrow(MatchNotFoundException::new);
 
-            synchronized (ongoingMatch) {
-                ongoingMatch.addPoint(request.name());
+        synchronized (ongoingMatch) {
+            ongoingMatch.addPoint(request.name());
 
-                if (ongoingMatch.isFinished()) {
-                    saveFinishedMatch(ongoingMatch);
-                    ongoingMatchService.remove(id);
-                }
-
-                return ongoingMatchMapper.toDto(ongoingMatch);
+            if (ongoingMatch.isFinished()) {
+                saveFinishedMatch(ongoingMatch);
+                ongoingMatchService.remove(id);
             }
-        });
+
+            return ongoingMatchMapper.toDto(ongoingMatch);
+        }
     }
 
     public ScoreResponse getScore(UUID uuid) {
-        return txRunner.runInTransaction(() -> {
-            OngoingMatch match = ongoingMatchService.find(uuid)
-                    .orElseThrow(MatchNotFoundException::new);
+        OngoingMatch match = ongoingMatchService.find(uuid)
+                .orElseThrow(MatchNotFoundException::new);
 
-            return ongoingMatchMapper.toDto(match);
-        });
+        return ongoingMatchMapper.toDto(match);
     }
 
     public FinishedMatchesResponse getFinishedMatches(int page, String playerName) {

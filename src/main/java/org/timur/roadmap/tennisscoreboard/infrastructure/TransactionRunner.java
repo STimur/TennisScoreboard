@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
+import org.timur.roadmap.tennisscoreboard.exception.DataAccessException;
 
 @Component
 public class TransactionRunner {
@@ -46,7 +47,7 @@ public class TransactionRunner {
                     ex.addSuppressed(rbe);
                 }
             }
-            throw new RuntimeException("Transaction failed", ex);
+            throw new DataAccessException(ex);
         } finally {
             // Закрываем сессию ТОЛЬКО если мы её открывали (на внешнем уровне).
             // При context="thread" и откате/коммите сессия может закрыться сама,
