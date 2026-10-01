@@ -13,11 +13,23 @@ public class DataSourceConfig {
     @Bean
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://localhost:5432/tennis_scoreboard");
-        ds.setUsername("tennis_app");
-        ds.setPassword("secret");
+        ds.setJdbcUrl(requiredEnv("DB_URL"));
+        ds.setUsername(requiredEnv("DB_USERNAME"));
+        ds.setPassword(requiredEnv("DB_PASSWORD"));
         ds.setDriverClassName("org.postgresql.Driver");
         ds.setMaximumPoolSize(10);
         return ds;
+    }
+
+    private String requiredEnv(String name) {
+        String value = System.getenv(name);
+
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                    "Required environment variable is not set: " + name
+            );
+        }
+
+        return value;
     }
 }
