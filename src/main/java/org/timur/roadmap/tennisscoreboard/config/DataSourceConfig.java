@@ -17,7 +17,13 @@ public class DataSourceConfig {
         ds.setUsername(requiredEnv("DB_USERNAME"));
         ds.setPassword(requiredEnv("DB_PASSWORD"));
         ds.setDriverClassName("org.postgresql.Driver");
-        ds.setMaximumPoolSize(10);
+
+        // Оптимизация под 1 GiB RAM на сервере
+        ds.setMaximumPoolSize(5);      // Максимум 5 одновременных соединений
+        ds.setMinimumIdle(1);          // В простое держим только 1 соединение
+        ds.setIdleTimeout(30000);      // Закрывать лишние соединения через 30 секунд простоя
+        ds.setMaxLifetime(1800000);    // Пересоздавать соединение каждые 30 минут (защита от утечек)
+
         return ds;
     }
 
