@@ -8,7 +8,7 @@ import org.timur.roadmap.tennisscoreboard.domain.OngoingMatch;
 import org.timur.roadmap.tennisscoreboard.dto.PlayerScoreDto;
 import org.timur.roadmap.tennisscoreboard.dto.ScoreResponse;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring") // для "spring" в mapstruct есть специальная константа: MappingConstants.ComponentModel.SPRING
 public interface OngoingMatchMapper {
 
     @Mapping(target = "firstPlayer", source = "score", qualifiedByName = "firstPlayer")

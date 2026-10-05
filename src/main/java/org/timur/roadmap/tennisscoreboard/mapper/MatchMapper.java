@@ -6,7 +6,7 @@ import org.timur.roadmap.tennisscoreboard.dto.FinishedMatchDto;
 import org.timur.roadmap.tennisscoreboard.dto.MatchDto;
 import org.timur.roadmap.tennisscoreboard.entity.Match;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring") // для "spring" в mapstruct есть специальная константа: MappingConstants.ComponentModel.SPRING
 public interface MatchMapper {
 
     @Mapping(target = "player1", source = "player1.name")

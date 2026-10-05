@@ -10,6 +10,10 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    // Комментарии, которые просто описывают работу методов, не нужны. Стоит удалять их перед коммитом.
+
+    // Для внедрения свойств можно использовать аннотацию @Value.
+
     @Bean
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
@@ -27,7 +31,10 @@ public class DataSourceConfig {
         return ds;
     }
 
-    private String requiredEnv(String name) {
+    // В java методы принято называть глаголами или глагольными фразами.
+        // В классах конфигурации исключение составляют методы, создающие бины.
+        // Поэтому можно назвать этот метод getRequiredEnvironmentValue.
+    private String requiredEnv(String name) { // Можно назвать аргумент String variableName
         String value = System.getenv(name);
 
         if (value == null || value.isBlank()) {

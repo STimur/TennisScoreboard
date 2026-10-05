@@ -15,6 +15,11 @@ import javax.sql.DataSource;
 @Configuration
 public class HibernateConfig {
 
+    // Комментарии, которые просто описывают работу методов, не нужны. Стоит удалять их перед коммитом.
+
+    // Для внедрения свойств можно использовать аннотацию @Value.
+
+    // Лучше использовать LocalSessionFactoryBean — это более стандартный способ.
     @Bean
     @DependsOn("flyway")
     public SessionFactory sessionFactory(DataSource dataSource) {

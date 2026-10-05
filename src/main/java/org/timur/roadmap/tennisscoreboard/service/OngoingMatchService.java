@@ -11,9 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class OngoingMatchService {
 
+    // Нет интерфейса для этого класса. (см. файл "service.md" в этом же пакете)
+
     private final Map<UUID, OngoingMatch> matches =
             new ConcurrentHashMap<>();
 
+    // Хранилище может само создавать ID для матча (по аналогии с БД) и возвращать его из этого метода.
     public void add(OngoingMatch match) {
         matches.put(match.getId(), match);
     }

@@ -24,6 +24,19 @@ import java.util.UUID;
 @Service
 public class MatchService {
 
+    // Нет интерфейса для этого класса. (см. файл "service.md" в этом же пакете)
+
+    // TODO: Класс совмещает несколько разных ответственностей:
+        // - работает с текущими матчами
+        // - работает с завершёнными матчами
+        // - занимается валидацией данных из запроса
+        // - оркестрирует преобразование List<Entity> в List<DTO>
+        //
+        // Это нарушает принцип единой ответственности (SRP).
+        // Стоит разделить логику работы с разными матчами на разные более специализированные классы.
+        // Логику валидации запроса оставить только в сервлете,
+        // а преобразование List<Entity> —> List<DTO> перенести в маппер.
+
     private final MatchDao matchDao;
     private final MatchMapper matchMapper;
     private final OngoingMatchMapper ongoingMatchMapper;
@@ -42,6 +55,7 @@ public class MatchService {
         this.txRunner = txRunner;
     }
 
+    // Метод нигде не используется в проекте. Такой код стоит удалять перед коммитом.
     public List<MatchDto> getAllMatches() {
         return txRunner.runInTransaction(
                 () -> matchDao.findAll()
@@ -70,10 +84,25 @@ public class MatchService {
         });
     }
 
+    // Аннотация валидации PointRequest уже есть в контроллере и там её правильное место.
+        // Запрос от пользователя стоит проверять как можно ближе ко входу этих данных в приложение.
+        // Здесь аннотацию @Valid стоит удалить, так класс станет строже соблюдать принцип единой ответственности (SRP).
     public ScoreResponse addPoint(UUID id, @Valid PointRequest request) {
         OngoingMatch ongoingMatch = ongoingMatchService.find(id)
                 .orElseThrow(MatchNotFoundException::new);
 
+        // TODO: Race condition при обработке выигранного очка.
+            // Например, если пользователь очень быстро нажмёт кнопку выигрыша очка, браузер отправит два POST-запроса почти одновременно.
+            // Эти два запроса будут обработаны в двух разных потоках и оба потока будут работать с одним и тем же общим объектом `OngoingMatch`,
+            // что может привести к попытке начисления очка в уже завершённом матче:
+                // Оба потока получают ссылку на объект матча — ongoingMatchService.find().
+                // Первый поток входит в synchronized, добавляет решающее очко, isFinished() становится true,
+                // он сохраняет матч в БД и удаляет его из хранилища.
+                // Затем второй поток, который держит уже устаревшую к этому моменту ссылку,
+                // входит в synchronized и вызывает addPoint() на уже завершённом матче.
+                // Дальше ongoingMatch.isFinished() для второго потока снова вернёт true
+                // и через saveFinishedMatch в БД появится дубль матча.
+            // Чтобы это исправить, например нужно внутри блока synchronized выполнять логику только если матч не завершён.
         synchronized (ongoingMatch) {
             ongoingMatch.addPoint(request.name());
 
@@ -98,6 +127,9 @@ public class MatchService {
             PageResult<Match> matches = matchDao.findFinishedMatches(page - 1, playerName);
 
             return new FinishedMatchesResponse(
+
+                    // Логику преобразования List<Entity> —> List<DTO> стоит перенести в маппер.
+                        // Так класс станет строже соблюдать принцип единой ответственности (SRP).
                     matches.items()
                             .stream()
                             .map(matchMapper::toFinishedDto)

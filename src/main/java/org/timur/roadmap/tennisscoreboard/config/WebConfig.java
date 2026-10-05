@@ -9,8 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "org.timur.roadmap.tennisscoreboard")
+@ComponentScan(basePackages = "org.timur.roadmap.tennisscoreboard") // В веб конфигурации лучше оставить
+    // сканирование пакетов только веб слоя, а остальные сканировать в другом классе (например в AppConfig).
 public class WebConfig implements WebMvcConfigurer {
+
+    // Комментарии, которые не несут значимой смысловой нагрузки (как в строке 18) или
+        // просто описывают работу методов, не нужны. Стоит удалять их перед коммитом.
     // You can override methods here to add View Resolvers or Resource Handlers
 
     @Override
