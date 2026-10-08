@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     // TODO: Фронтенд ожидает в JSON одно поле с сообщением об ошибке, а не массив.
         // Поэтому сообщения об ошибке валидации имени сейчас не отображаются.
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidation(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException exception) {
         List<ValidationError> errors = new ArrayList<>();
 
         exception.getBindingResult()
@@ -54,9 +54,12 @@ public class GlobalExceptionHandler {
                         ))
                 );
 
+        ValidationErrorResponse validationResponse = new ValidationErrorResponse(errors);
+        ErrorResponse errorResponse = new ErrorResponse(validationResponse);
+
         return ResponseEntity
                 .badRequest()
-                .body(new ValidationErrorResponse(errors));
+                .body(errorResponse);
     }
 
     @ExceptionHandler(DataAccessException.class)
