@@ -7,6 +7,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MatchScoreTest {
 
+    // Для тестов доменной модели построение состояния через публичный API ценнее, чем установка его через конструктор.
+        // Так проще отловить ошибку на пути от одного состояния к другому.
+        // Поэтому для создания модели стоит использовать конструктор без аргументов
+        // и приводить объект в нужное для каждого теста состояние через публичные методы.
+
+    // Вместо простого описательного стиля именования тестов (firstPlayerScoresPoint) можно использовать Given/When/Then,
+        // который хорошо подходит для тестов модели.
+
+    // Можно добавить тесты для покрытия полного розыгрыша матча, а также для крайних случаев и негативных кейсов.
+        // Например, для попытки начислить очко в уже завершённом матче.
+
+    // Чтобы задать более человекочитаемые имена тестам можно использовать @DisplayName.
+
     @Test
     public void firstPlayerScoresPoint() {
         MatchScore matchScore = new MatchScore("First Player", "Second Player", 0, 0, 0, 0, GamePoint.FORTY, GamePoint.AD);
@@ -74,10 +87,10 @@ public class MatchScoreTest {
         matchScore.addPoint("Second Player");
 
         assertEquals(6, matchScore.getFirstPlayerGames());
-        assertEquals(null, matchScore.getFirstPlayerPoints());
+        assertEquals(null, matchScore.getFirstPlayerPoints()); // Можно использовать assertNull
         assertEquals(0, matchScore.getFirstPlayerTieBreakPoints());
         assertEquals(6, matchScore.getSecondPlayerGames());
-        assertEquals(null, matchScore.getSecondPlayerPoints());
+        assertEquals(null, matchScore.getSecondPlayerPoints()); // Можно использовать assertNull
         assertEquals(1, matchScore.getSecondPlayerTieBreakPoints());
     }
 

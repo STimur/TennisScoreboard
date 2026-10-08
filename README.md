@@ -1,3 +1,5 @@
+### [Ревью на реализацию проекта находится здесь](https://github.com/vasiliy-spb/review_tennis-scoreboard_for_timshas-STimur/blob/code-review/code-review/REVIEW_README.md)
+
 ## Local development
 
 The application requires the following environment variables:

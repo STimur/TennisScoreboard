@@ -10,4 +10,7 @@ public record Score(
         int firstPlayerTieBreakPoints,
         int secondPlayerTieBreakPoints
 ) {
+
+    // Класс нигде не используется в проекте. В текущей реализации его можно удалить.
+
 }

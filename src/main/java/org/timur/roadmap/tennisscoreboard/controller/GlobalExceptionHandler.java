@@ -17,6 +17,10 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // TODO: Набор обрабатываемых исключений неполный.
+        // Стоит добавить обработку и других возможных исключений, в том числе общий обработчик
+        // для всех непредвиденных ошибок (Exception), чтобы клиент никогда не получал stack trace.
+
     @ExceptionHandler(MatchNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleMatchNotFound(MatchNotFoundException exception) {
         ErrorResponse response = new ErrorResponse(exception.getMessage());
@@ -26,6 +30,8 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    // TODO: Фронтенд ожидает в JSON одно поле с сообщением об ошибке, а не массив.
+        // Поэтому сообщения об ошибке валидации имени сейчас не отображаются.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidation(MethodArgumentNotValidException exception) {
         List<ValidationError> errors = new ArrayList<>();
@@ -55,6 +61,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException exception) {
+
+        // TODO: Сообщение из DataAccessException может содержать внутренние детали реализации
+            // (например, названия полей, структуру данных), которые не стоит показывать клиенту.
+            // Сейчас это не так только из-за захардкоженного сообщения в DataAccessException.
+            // Лучше возвращать обобщённое сообщение (например, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()),
+            // а детали логировать.
         ErrorResponse response = new ErrorResponse(exception.getMessage());
 
         return ResponseEntity

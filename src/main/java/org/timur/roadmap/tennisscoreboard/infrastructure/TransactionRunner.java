@@ -9,6 +9,15 @@ import org.timur.roadmap.tennisscoreboard.exception.DataAccessException;
 @Component
 public class TransactionRunner {
 
+    // TODO: Трансляцию исключений от БД в DatabaseException лучше перенести в слой репозиториев,
+        // так как это их ответственность. Тогда как работа с транзакциями — ответственность слоя сервисов.
+        // Также TransactionManager трансляцией исключений нарушает принцип единственной ответственности (SRP).
+        // Менеджер транзакций не должен заниматься маппингом ошибок.
+        // Лучше в TransactionManager после отката транзакции прокидывать оригинальное исключение без оборачивания.
+
+    // Комментарии, которые не несут значимой смысловой нагрузки или
+        // просто описывают работу методов, не нужны. Стоит удалять их перед коммитом.
+
     private final SessionFactory sessionFactory;
 
     public TransactionRunner(SessionFactory sessionFactory) {
@@ -20,6 +29,10 @@ public class TransactionRunner {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.getTransaction();
 
+        // Переменная isExistingTransaction всегда используется с отрицанием.
+            // Лучше вместо неё создать такую:
+            // boolean isNewTransaction = transaction.getStatus() == TransactionStatus.NOT_ACTIVE;
+            // или boolean isNewTransaction = !transaction.isActive();
         // Проверяем, активна ли транзакция в текущем потоке (была ли она открыта выше по стеку)
         boolean isExistingTransaction = transaction.isActive();
 
@@ -53,6 +66,9 @@ public class TransactionRunner {
             // При context="thread" и откате/коммите сессия может закрыться сама,
             // но проверка предотвращает повторное закрытие уже мертвой сессии.
             if (!isExistingTransaction && session.isOpen()) {
+
+                // TODO: TransactionRunner не должен управлять жизненным циклом сессии.
+                    // Его ответственность — транзакции.
                 session.close();
             }
         }

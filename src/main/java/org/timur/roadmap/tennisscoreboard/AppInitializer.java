@@ -5,6 +5,9 @@ import org.timur.roadmap.tennisscoreboard.config.WebConfig;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
+    // Комментарии, которые не несут значимой смысловой нагрузки или
+        // просто описывают работу методов, не нужны. Стоит удалять их перед коммитом.
+
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return null; 

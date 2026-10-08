@@ -33,6 +33,7 @@ public class Player {
     private String name;
 
     protected Player() {
+        // Пояснение в этом комментарии избыточно. Комментарий не нужен.
         // нужен Hibernate
     }
 
@@ -48,6 +49,8 @@ public class Player {
         return name;
     }
 
+    // TODO: сеттер для имени не нужен — имя игрока уникально и неизменно в этом проекте,
+        // а сеттер позволяет изменить имя игрока после создания.
     public void setName(String name) {
         this.name = name;
     }

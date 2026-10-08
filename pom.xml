@@ -11,12 +11,16 @@
     <packaging>war</packaging>
 
     <properties>
+        <!-- Саму версию Java можно отдельно вынести в properties: -->
+<!--        <java.version>21</java.version>-->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Версии зависимостей (особенно повторяющиеся) тоже лучше вынести в properties -->
     </properties>
 
     <dependencies>
+        <!-- Комментарии, не несущие важной смысловой нагрузки лучше удалять перед коммитом -->
         <!-- Spring Web MVC -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -131,6 +135,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
+                    <!-- Лучше удалить <source>/<target> из плагина, тогда он возьмёт их из properties и версия Java будет задаваться в одном месте -->
                     <source>21</source>
                     <target>21</target>
                     <annotationProcessorPaths>
